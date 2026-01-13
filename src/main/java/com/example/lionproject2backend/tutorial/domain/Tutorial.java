@@ -85,6 +85,10 @@ public class Tutorial extends BaseEntity{
         this.tutorialSkills.add(tutorialSkill);
     }
 
+    public void addSkills(List<Skill> skills) {
+        skills.forEach(this::addSkill);
+    }
+
     public void updateSkills(List<Skill> newSkills) {
         this.tutorialSkills.clear(); // 기존 스킬 삭제
         if (newSkills != null && !newSkills.isEmpty()) {
@@ -94,10 +98,6 @@ public class Tutorial extends BaseEntity{
 
     public void clearSkills() {
         this.tutorialSkills.clear(); // 스킬 리스트 빈 상태로 초기화
-    }
-
-    public void addSkills(List<Skill> skills) {
-        skills.forEach(this::addSkill);
     }
 
     public void changeStatus(TutorialStatus newStatus) {

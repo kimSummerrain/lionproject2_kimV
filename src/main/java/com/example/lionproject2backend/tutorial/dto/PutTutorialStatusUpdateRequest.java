@@ -1,8 +1,7 @@
 package com.example.lionproject2backend.tutorial.dto;
 
 import com.example.lionproject2backend.tutorial.domain.TutorialStatus;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor

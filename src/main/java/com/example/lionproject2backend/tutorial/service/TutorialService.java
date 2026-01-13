@@ -10,12 +10,9 @@ import com.example.lionproject2backend.tutorial.dto.GetTutorialResponse;
 import com.example.lionproject2backend.tutorial.dto.PutTutorialStatusUpdateRequest;
 import com.example.lionproject2backend.tutorial.dto.PutTutorialUpdateRequest;
 import com.example.lionproject2backend.tutorial.repository.TutorialRepository;
-import com.example.lionproject2backend.user.domain.User;
-import com.example.lionproject2backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -26,18 +23,10 @@ public class TutorialService {
     private final TutorialRepository tutorialRepository;
     private final MentorRepository mentorRepository;
     private final SkillRepository skillRepository;
-    private final UserRepository userRepository;
-
-
 
     public GetTutorialResponse createTutorial(Long userId, PostTutorialCreateRequest request) {
 
 
-        // User 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
-        // mentor 여부 확인
         Mentor mentor = mentorRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("멘토 권한이 없는 사용자입니다."));
 
@@ -58,10 +47,7 @@ public class TutorialService {
             throw new IllegalArgumentException("존재하지 않는 스킬이 포함되어 있습니다.");
         }
 
-        // 튜토리얼에 스킬 연결
-        for (Skill skill : skills) {
-            tutorial.addSkill(skill);
-        }
+        skills.forEach(tutorial::addSkill);
 
         Tutorial savedTutorial = tutorialRepository.save(tutorial);
         return GetTutorialResponse.from(savedTutorial);
@@ -85,22 +71,16 @@ public class TutorialService {
     }
 
 
-    public GetTutorialResponse updateTutorial(Long userId , Long tutorialId, PutTutorialUpdateRequest request) {
+    public GetTutorialResponse updateTutorial(Long userId, Long tutorialId, PutTutorialUpdateRequest request) {
 
-        // User 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
-        // Mentor 여부 확인
         Mentor mentor = mentorRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("멘토 권한이 없는 사용자입니다."));
 
-        // Tutorial 조회
-        Tutorial tutorial = tutorialRepository.findById(tutorialId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 튜토리얼"));
+        Tutorial tutorial = tutorialRepository.findByIdAndMentorId(tutorialId, mentor.getId())
+                .orElseThrow(() -> new IllegalArgumentException("튜토리얼을 수정할 권한이 없습니다."));
 
 
-        // 수정 (Dirty Checking)
+        // 수정
         tutorial.update(
                 request.getTitle(),
                 request.getDescription(),
@@ -126,13 +106,12 @@ public class TutorialService {
 
     public Long deleteTutorial(Long userId, Long tutorialId) {
 
-        // User 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Mentor mentor = mentorRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("멘토 권한이 없는 사용자입니다."));
 
-        // Tutorial 조회
-        Tutorial tutorial = tutorialRepository.findById(tutorialId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 튜토리얼"));
+        Tutorial tutorial = tutorialRepository.findByIdAndMentorId(tutorialId, mentor.getId())
+                .orElseThrow(() -> new IllegalArgumentException("튜토리얼을 수정할 권한이 없습니다."));
+
 
         Long id = tutorial.getId(); // 삭제 전에 잡아둠
         tutorialRepository.delete(tutorial);
@@ -154,14 +133,11 @@ public class TutorialService {
     // 상태 업데이트
     public GetTutorialResponse updateTutorialStatus(Long userId, Long tutorialId, PutTutorialStatusUpdateRequest request) {
 
-        // User 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Mentor mentor = mentorRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("멘토 권한이 없는 사용자입니다."));
 
-        // Tutorial 조회
-        Tutorial tutorial = tutorialRepository.findById(tutorialId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 튜토리얼"));
-
+        Tutorial tutorial = tutorialRepository.findByIdAndMentorId(tutorialId, mentor.getId())
+                .orElseThrow(() -> new IllegalArgumentException("튜토리얼을 수정할 권한이 없습니다."));
 
         tutorial.changeStatus(request.getTutorialStatus());
         return GetTutorialResponse.from(tutorial);

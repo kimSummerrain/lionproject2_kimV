@@ -26,7 +26,6 @@ public class TutorialController {
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody PostTutorialCreateRequest request
     ) {
-        System.out.println("🔥 userId = " + userId);
         GetTutorialResponse response = tutorialService.createTutorial(userId, request);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
