@@ -91,7 +91,7 @@ public class ReviewService {
                 .orElseThrow(() -> new CustomException(ErrorCode.TUTORIAL_NOT_FOUND));
 
         return reviewRepository.findByTutorialId(tutorialId, pageable)
-                .map(GetReviewDetailResponse::from);
+                .map(GetReviewDetailResponse::fromWithNickname);
     }
 
 
