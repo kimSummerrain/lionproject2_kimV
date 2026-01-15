@@ -1,5 +1,6 @@
 package com.example.lionproject2backend.global.exception.custom;
 
+import com.example.lionproject2backend.tutorial.domain.Tutorial;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public enum ErrorCode {
 	TUTORIAL_FORBIDDEN(HttpStatus.FORBIDDEN, "TUTORIAL_002", "해당 튜토리얼에 대한 권한이 없습니다."),
 
 	// TICKET
-	TICKET_NOT_FOUND(HttpStatus.NOT_FOUND, "TICKET_001", "티켓을 찾을 수 없습니다."),
+	TICKET_NOT_FOUND(HttpStatus.NOT_FOUND, "TICKET_001","티켓 정보를 찾을 수 없습니다. 관리자에게 문의 부탁드립니다"),
 	TICKET_FORBIDDEN(HttpStatus.FORBIDDEN, "TICKET_002", "해당 티켓에 대한 권한이 없습니다."),
 	TICKET_EXHAUSTED(HttpStatus.BAD_REQUEST, "TICKET_003", "티켓 잔여 횟수가 부족합니다."),
 
@@ -58,7 +59,10 @@ public enum ErrorCode {
 	REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_001", "리뷰를 찾을 수 없습니다."),
 	REVIEW_ALREADY_EXISTS(HttpStatus.CONFLICT, "REVIEW_002","이미 해당 튜토리얼에 리뷰가 존재합니다."),
 	REVIEW_CREATE_NOT_ENOUGH_COMPLETED(HttpStatus.BAD_REQUEST, "REVIEW_003","리뷰 작성은 최소 수강 완료 횟수 이후 가능합니다."),
-	REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "REVIEW_004", "본인이 작성한 리뷰만 접근할 수 있습니다.");
+	REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "REVIEW_004", "본인이 작성한 리뷰만 접근할 수 있습니다."),
+
+    // PAYMENT
+	PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"PAYMENT_001","결제 정보를 찾을 수 없습니다.");
 
 	private final HttpStatus status;
 	private final String code;
