@@ -123,14 +123,26 @@ public class MentorService {
                             .min()
                             .orElse(0);
 
-                    // 3. 6개의 인자를 사용하여 DTO 생성
+                    // 실제 리뷰 개수 조회
+                    int reviewCount = reviewRepository.countByMentorId(mentor.getId());
+
+                    // 평균 별
+                    List<Review> reviews = reviewRepository.findByMentorId(mentor.getId());
+                    double averageRating = reviews.isEmpty() ? 0.0 :
+                            reviews.stream()
+                                    .mapToInt(Review::getRating)
+                                    .average()
+                                    .orElse(0.0);
+
+                    // 3. 6개점의 인자를 사용하여 DTO 생성
                     return new GetMentorListResponse(
                             mentor.getId(),
                             mentor.getUser().getNickname(),
                             mentor.getCareer(),
-                            mentor.getReviewCount(),
+                            reviewCount,
                             skills,
-                            minPrice
+                            minPrice,
+                            averageRating
                     );
                 })
                 .collect(Collectors.toList());

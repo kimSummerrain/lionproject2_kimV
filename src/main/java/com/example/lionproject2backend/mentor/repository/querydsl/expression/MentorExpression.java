@@ -2,10 +2,13 @@ package com.example.lionproject2backend.mentor.repository.querydsl.expression;
 
 import com.example.lionproject2backend.mentor.domain.MentorStatus;
 import com.example.lionproject2backend.mentor.domain.QMentor;
+import com.example.lionproject2backend.mentor.domain.QMentorSkill;
 import com.example.lionproject2backend.mentor.dto.MentorSearchCondition;
+import com.example.lionproject2backend.skill.domain.QSkill;
 import com.querydsl.core.annotations.QueryDelegate;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -45,26 +48,25 @@ public class MentorExpression {
      */
 
     public static BooleanExpression skillIn(List<String> skills) {
-        if (skills == null || skills.isEmpty()) {
-            return null;
-        }
+        if (skills == null || skills.isEmpty()) return null;
 
-        // 모든 스킬 조건을 AND로 결합
-        BooleanExpression expression = null;
+        QMentorSkill subMentorSkill = new QMentorSkill("subMentorSkill");
+        QSkill subSkill = new QSkill("subSkill");
 
-        for (String skillName : skills) {
-            // 멘토가 가진 스킬들 중에 현재 skillName이 하나라도 있는지 확인하는 조건
-            BooleanExpression hasSkill = mentor.mentorSkills.any().skill.skillName.eq(skillName);
-
-            if (expression == null) {
-                expression = hasSkill;
-            } else {
-                // AND로 결합하여 모든 스킬을 가진 사람만 남김
-                expression = expression.and(hasSkill);
-            }
-        }
-
-        return expression;
+        // 대소문자 무시 + 개수 일치
+        return mentor.id.in(
+                JPAExpressions
+                        .select(subMentorSkill.mentor.id)
+                        .from(subMentorSkill)
+                        .join(subMentorSkill.skill, subSkill)
+                        .where(subSkill.skillName.lower().in(
+                                skills.stream()
+                                        .map(String::toLowerCase)
+                                        .toList()
+                        ))
+                        .groupBy(subMentorSkill.mentor.id)
+                        .having(subSkill.skillName.countDistinct().eq((long) skills.size()))
+        );
     }
 
     /**

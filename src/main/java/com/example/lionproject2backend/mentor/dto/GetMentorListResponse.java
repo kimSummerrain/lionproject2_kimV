@@ -18,4 +18,5 @@ public class GetMentorListResponse {
     private Integer reviewCount;
     private List<String> skills;
     private int minPrice;
+    private Double averageRating;
 }

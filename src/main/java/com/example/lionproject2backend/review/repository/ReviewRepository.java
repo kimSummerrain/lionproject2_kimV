@@ -19,4 +19,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByMentorId(Long mentorId);
 
     List<Review> findByMenteeIdOrderByCreatedAtDesc(Long menteeId);
+
+    // 멘토별 리뷰 개수 조회
+    int countByMentorId(Long mentorId);
 }
