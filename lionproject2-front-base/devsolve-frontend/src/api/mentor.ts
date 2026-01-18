@@ -23,6 +23,7 @@ export interface MentorDetail {
   nickname: string;
   career: string;
   reviewCount: number;
+  averageRating: number;
   skills: string[];
   tutorials: TutorialInfo[];
   reviews: ReviewInfo[];

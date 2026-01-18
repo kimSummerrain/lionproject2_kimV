@@ -119,8 +119,15 @@ public class MentorService {
                 .collect(Collectors.toList());
 
         List<Tutorial> tutorials = tutorialRepository.findByMentorId(mentorId);
-        List<Review> reviews = reviewRepository.findByMentorId(mentorId);
 
+        // 튜토리얼 ID 목록으로 리뷰 조회
+        List<Long> tutorialIds = tutorials.stream()
+                .map(Tutorial::getId)
+                .collect(Collectors.toList());
+
+        List<Review> reviews = tutorialIds.isEmpty()
+                ? List.of()
+                : reviewRepository.findByTutorialIdInWithTutorial(tutorialIds);
         return GetMentorDetailResponse.from(mentor, skills, tutorials, reviews);
     }
 

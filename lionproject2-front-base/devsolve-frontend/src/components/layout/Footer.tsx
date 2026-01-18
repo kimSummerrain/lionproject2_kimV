@@ -41,7 +41,7 @@ export default function Footer() {
           <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
             <li>
               <Link to="/mentors" className="hover:text-primary transition-colors">
-                멘토 찾기
+                강의 찾기
               </Link>
             </li>
             <li>

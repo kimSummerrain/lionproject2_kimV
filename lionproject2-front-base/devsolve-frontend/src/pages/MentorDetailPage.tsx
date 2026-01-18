@@ -69,10 +69,7 @@ export default function MentorDetailPage() {
     );
   }
 
-  // 평균 평점 계산
-  const averageRating = mentor.tutorials.length > 0
-    ? mentor.tutorials.reduce((sum, t) => sum + (t.rating || 0), 0) / mentor.tutorials.length
-    : 0;
+    const averageRating = mentor.averageRating || 0;
 
   return (
     <div className="pt-16">
