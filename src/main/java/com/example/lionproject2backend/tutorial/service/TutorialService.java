@@ -141,14 +141,6 @@ public class TutorialService {
         return Math.round(avg * 10) / 10.0;
     }
 
-//    @Transactional(readOnly = true)
-//    public List<GetTutorialResponse> getAllTutorials() {
-//        List<Tutorial> tutorials = tutorialRepository.findAll();
-//        return tutorials.stream()
-//                .map(GetTutorialResponse::from) // 단건 조회 방식과 동일하게 변환
-//                .toList();
-//    }
-
 
     public GetTutorialResponse updateTutorial(Long userId, Long tutorialId, PutTutorialUpdateRequest request) {
 
