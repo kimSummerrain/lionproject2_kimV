@@ -2,7 +2,6 @@ package com.example.lionproject2backend.mentor.service;
 
 import com.example.lionproject2backend.mentor.domain.Mentor;
 import com.example.lionproject2backend.mentor.domain.MentorSkill;
-import com.example.lionproject2backend.mentor.domain.MentorStatus;
 import com.example.lionproject2backend.mentor.dto.*;
 import com.example.lionproject2backend.mentor.repository.MentorRepository;
 import com.example.lionproject2backend.mentor.repository.MentorSkillRepository;
@@ -64,7 +63,45 @@ public class MentorService {
         }
 
         return new PostMentorApplyResponse(savedMentor.getId(), "APPROVED");
+    }
 
+    /**
+     * 멘토 전체 조회
+     */
+    public List<GetMentorListResponse> getAllMentors() {
+        List<Mentor> mentors = mentorRepository.findAll();
+
+        return mentors.stream()
+                .map(mentor -> {
+                    // 1. 스킬 목록 추출
+                    List<String> skills = mentor.getMentorSkills().stream()
+                            .map(ms -> ms.getSkill().getSkillName())
+                            .collect(Collectors.toList());
+
+                    // 2. 리뷰 목록 조회
+                    List<Review> reviews = reviewRepository.findByMentorId(mentor.getId());
+
+                    // 3. 리뷰 개수
+                    int reviewCount = reviews.size();
+
+                    // 4. 평균 평점 계산 (리뷰 없으면 0.0)
+                    double averageRating = Math.round(
+                            reviews.stream()
+                                    .mapToInt(Review::getRating)
+                                    .average()
+                                    .orElse(0.0) * 10
+                    ) / 10.0;
+
+                    return new GetMentorListResponse(
+                            mentor.getId(),
+                            mentor.getUser().getNickname(),
+                            mentor.getCareer(),
+                            reviewCount,
+                            skills,
+                            averageRating
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     /**
@@ -97,54 +134,4 @@ public class MentorService {
         return getMentor(mentor.getId());
     }
 
-    /**
-     * 멘토 검색 및 전체 조회
-     * 조건이 없으면 전체 조회
-     */
-    public List<GetMentorListResponse> searchMentors(MentorSearchCondition condition) {
-        List<Mentor> mentors = mentorRepository.searchMentors(condition);
-        return convertToResponse(mentors);
-    }
-
-    /**
-     * 멘토 리스트를 GetMentorListResponse DTO로 변환
-     */
-    private List<GetMentorListResponse> convertToResponse(List<Mentor> mentors) {
-        return mentors.stream()
-                .map(mentor -> {
-                    // 1. 스킬 목록 추출
-                    List<String> skills = mentor.getMentorSkills().stream()
-                            .map(ms -> ms.getSkill().getSkillName())
-                            .collect(Collectors.toList());
-
-                    // 2. 멘토가 가진 튜토리얼 중 최저 가격 계산 (메서드 참조 사용)
-                    int minPrice = mentor.getTutorials().stream()
-                            .mapToInt(Tutorial::getPrice)
-                            .min()
-                            .orElse(0);
-
-                    // 실제 리뷰 개수 조회
-                    int reviewCount = reviewRepository.countByMentorId(mentor.getId());
-
-                    // 평균 별
-                    List<Review> reviews = reviewRepository.findByMentorId(mentor.getId());
-                    double averageRating = reviews.isEmpty() ? 0.0 :
-                            reviews.stream()
-                                    .mapToInt(Review::getRating)
-                                    .average()
-                                    .orElse(0.0);
-
-                    // 3. 6개점의 인자를 사용하여 DTO 생성
-                    return new GetMentorListResponse(
-                            mentor.getId(),
-                            mentor.getUser().getNickname(),
-                            mentor.getCareer(),
-                            reviewCount,
-                            skills,
-                            minPrice,
-                            averageRating
-                    );
-                })
-                .collect(Collectors.toList());
-    }
 }
