@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * 관리자 API 컨트롤러
  * - 멘토 승인/거절
- * - 환불 승인/거절
  */
 @RestController
 @RequestMapping("/api/admin")

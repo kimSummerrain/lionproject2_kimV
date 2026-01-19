@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 /**
  * 관리자 서비스
  * - 멘토 승인/거절 처리
- * - 환불 승인/거절 처리
  */
 @Service
 @RequiredArgsConstructor
