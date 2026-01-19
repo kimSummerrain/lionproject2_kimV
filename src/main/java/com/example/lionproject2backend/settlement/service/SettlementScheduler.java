@@ -29,7 +29,7 @@ public class SettlementScheduler {
      * 매월 1일 00:00:00에 실행
      * 전월 정산 생성
      */
-    @Scheduled(cron = "0 43 14 19 1 ?")
+    @Scheduled(cron = "0 48 15 19 1 ?")
     //@Scheduled(cron = "0 0 0 1 * ?")
     public void createMonthlySettlement() {
         try {

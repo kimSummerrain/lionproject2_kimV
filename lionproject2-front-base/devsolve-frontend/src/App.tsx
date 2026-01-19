@@ -20,6 +20,7 @@ import PaymentCompletePage from './pages/PaymentCompletePage';
 import MentorApplicationPage from './pages/MentorApplicationPage';
 import HowItWorksPage from './pages/HowItWorksPage';
 import SettlementHistoryPage from './pages/SettlementHistoryPage';
+import AdminSettlementPage from './pages/AdminSettlementPage';
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -62,6 +63,7 @@ function App() {
           <Route path="/payment/complete" element={<PaymentCompletePage />} />
           <Route path="/mypage/payments" element={<PaymentHistoryPage />} />
           <Route path="/admin/refunds" element={<AdminRefundPage />} />
+          <Route path="/admin/settlements" element={<AdminSettlementPage />} />
           <Route path="/mentor/settlements" element={<SettlementHistoryPage />} />
         </Route>
         </Routes>

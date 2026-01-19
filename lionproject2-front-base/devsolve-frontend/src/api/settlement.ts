@@ -70,3 +70,29 @@ export const getSettlementDetail = async (
   );
   return response.data;
 };
+
+/**
+ * 정산 지급 완료 처리
+ * POST /api/settlements/{settlementId}/complete
+ */
+export const completeSettlement = async (
+  settlementId: number
+): Promise<ApiResponse<Settlement>> => {
+  const response = await api.post<ApiResponse<Settlement>>(
+    `/api/settlements/${settlementId}/complete`
+  );
+  return response.data;
+};
+
+/**
+ * 정산 생성 (Spring Batch Job 실행)
+ * POST /api/settlements
+ */
+export const createSettlement = async (
+  settlementPeriod: string // "YYYY-MM" 형식
+): Promise<ApiResponse<void>> => {
+  const response = await api.post<ApiResponse<void>>('/api/settlements', {
+    settlementPeriod,
+  });
+  return response.data;
+};
