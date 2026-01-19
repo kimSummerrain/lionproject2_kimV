@@ -185,9 +185,11 @@ export default function TutorialDetailPage() {
 
           {/* Skills */}
           <div className="flex flex-wrap gap-2 mt-6">
-            {tutorial.skills.map((skill) => (
-              <Badge key={skill.id} variant="secondary">{skill.name}</Badge>
-            ))}
+              {tutorial.skills.map((skill, index) => (
+                  <Badge key={typeof skill === 'string' ? index : skill.id} variant="secondary">
+                      {typeof skill === 'string' ? skill : skill.name}
+                  </Badge>
+              ))}
           </div>
         </div>
 
